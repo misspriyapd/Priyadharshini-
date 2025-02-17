@@ -1,0 +1,63 @@
+CREATE DATABASE StudentDB;
+USE StudentDB;
+
+
+CREATE TABLE Students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    age INT NOT NULL,
+    email VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE Courses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Enrollments (
+    student_id INT,
+    course_id INT,
+    grade CHAR(1),
+    PRIMARY KEY (student_id, course_id),
+    FOREIGN KEY (student_id) REFERENCES Students(id),
+    FOREIGN KEY (course_id) REFERENCES Courses(id)
+);
+
+
+-- Insert students
+INSERT INTO Students (name, age, email) VALUES
+('Alice Johnson', 20, 'alice@example.com'),
+('Bob Smith', 22, 'bob@example.com'),
+('Charlie Brown', 21, 'charlie@example.com');
+
+-- Insert courses
+INSERT INTO Courses (name) VALUES
+('Mathematics'),
+('Physics'),
+('Computer Science');
+
+-- Insert enrollments
+INSERT INTO Enrollments (student_id, course_id, grade) VALUES
+(1, 1, 'A'),
+(1, 2, 'B'),
+(2, 1, 'C'),
+(3, 3, 'A'),
+(2, 3, 'B');
+
+-- List all students
+SELECT * FROM Students;
+
+-- List all courses
+SELECT * FROM Courses;
+
+-- Show the names of students and the courses they are enrolled in
+SELECT Students.name AS student_name, Courses.name AS course_name
+FROM Enrollments
+JOIN Students ON Enrollments.student_id = Students.id
+JOIN Courses ON Enrollments.course_id = Courses.id;
+
+-- Count the number of students in each course
+SELECT Courses.name AS course_name, COUNT(Enrollments.student_id) AS student_count
+FROM Enrollments
+JOIN Courses ON Enrollments.course_id = Courses.id
+GROUP BY Courses.name;
